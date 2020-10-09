@@ -1,0 +1,53 @@
+version: '3.4'
+
+volumes:
+  base-service-data:
+
+networks:
+  base-service-net:
+    driver: "bridge"
+
+services:
+
+  mysql:
+    image: mysql:5.7.31
+    environment:
+      MYSQL_ROOT_PASSWORD: testpass
+      MYSQL_DATABASE: basedb
+    container_name: mysql
+    ports:
+      - "3308:3306"
+    volumes:
+      - base-service-data:/var/lib/mysql
+    networks:
+      - base-service-net
+
+  base-service-dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_ENV: "dev"
+    container_name: base-service-dev
+    ports:
+        - "8081:8080"
+    links:
+      - mysql
+    depends_on: 
+      - mysql
+    networks:
+      - base-service-net
+
+  base-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_ENV: "prod"
+    container_name: base-service
+    ports:
+        - "8080:8080"
+    depends_on: 
+      - mysql
+    networks:
+      - base-service-net
