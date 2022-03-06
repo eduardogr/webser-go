@@ -34,6 +34,7 @@ func (r *Router) BuildRouter() (*mux.Router, error) {
 		})
 	})
 
+	// Paths for /api/v0/
 	var apiV0Router = apiRouter.PathPrefix("/v0").Subrouter()
 	apiV0Router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusForbidden)

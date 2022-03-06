@@ -33,7 +33,14 @@ func ProvideNumberRepository(s Storage) api.NumberRepository {
 }
 
 func NewStorage(db *sql.DB) Storage {
-	return &storage{db: db}
+	s := &storage{db: db}
+	err := s.Initialize()
+
+	if err != nil {
+		return nil
+	}
+
+	return s
 }
 
 func (s *storage) Initialize() error {

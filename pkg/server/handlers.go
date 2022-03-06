@@ -31,16 +31,22 @@ func (h *Handler) GetAllNumbers(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"success": false,
 			"data": map[string]string{
-				"message": "Something went wrong",
+				"error": err.Error(),
 			},
 		}
 		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	numbersResponse := []api.Number{}
+	if Numbers != nil {
+		numbersResponse = Numbers
 	}
 
 	response := map[string]interface{}{
 		"success": true,
 		"data": map[string]interface{}{
-			"numbers": Numbers,
+			"numbers": numbersResponse,
 		},
 	}
 	json.NewEncoder(w).Encode(response)
@@ -58,10 +64,11 @@ func (h *Handler) GetNumber(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"success": false,
 			"data": map[string]string{
-				"message": "Something went wrong",
+				"error": err.Error(),
 			},
 		}
 		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	if number != (api.Number{}) {
@@ -82,22 +89,34 @@ func (h *Handler) CreateNumber(w http.ResponseWriter, r *http.Request) {
 
 	// get the body of our POST request
 	// unmarshal this into a new NewNumberRequest struct
+
 	reqBody, _ := ioutil.ReadAll(r.Body)
 
 	var n api.NewNumberRequest
-	json.Unmarshal(reqBody, &n)
+	err := json.Unmarshal(reqBody, &n)
+	if err != nil {
+		response := map[string]interface{}{
+			"success": false,
+			"data": map[string]string{
+				"error": err.Error(),
+			},
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 
 	// create request
-	err := h.numberService.New(n)
+	err = h.numberService.New(n)
 
 	if err != nil {
 		response := map[string]interface{}{
 			"success": false,
 			"data": map[string]string{
-				"message": "Something went wrong",
+				"error": err.Error(),
 			},
 		}
 		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	response := map[string]interface{}{
@@ -125,10 +144,11 @@ func (h *Handler) UpdateNumber(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"success": false,
 			"data": map[string]string{
-				"message": "Something went wrong",
+				"error": err.Error(),
 			},
 		}
 		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	response := map[string]interface{}{
@@ -154,10 +174,11 @@ func (h *Handler) DeleteNumber(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"success": false,
 			"data": map[string]string{
-				"message": "Something went wrong",
+				"error": err.Error(),
 			},
 		}
 		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	response := map[string]interface{}{
