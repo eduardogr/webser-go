@@ -1,6 +1,6 @@
-<h1 align="center"> webserver-go </h1> <br>
+<h1 align="center"> go-webserver </h1> <br>
 
-## Bootstrapping web-server-go
+## Bootstrapping go-server
 
 ### Installations needed
 
