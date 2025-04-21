@@ -25,10 +25,3 @@ GET /api/v1/numbers, return all numbers stored
 
 POST /api/v1/numbers -d '{"ID":11}', creating a number in the storage
 ```
-
-## TODO
-
-- [ ] Migrations of the DDBB schema
-- [ ] Complete API documentation for clients' usage
-- [ ] Improve docker image building for go mod download slow down
-- [ ] Testing when initializing database schema did not work
