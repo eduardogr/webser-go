@@ -32,4 +32,3 @@ POST /api/v1/numbers -d '{"ID":11}', creating a number in the storage
 - [ ] Complete API documentation for clients' usage
 - [ ] Improve docker image building for go mod download slow down
 - [ ] Testing when initializing database schema did not work
-- [ ] Adding tests for api specifications. Package pkg.server
