@@ -1,4 +1,4 @@
-FROM golang:1.14.9-alpine3.12
+FROM golang:1.24.1-alpine3.21
 
 ARG BUILD_ENV=dev
 
