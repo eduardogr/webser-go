@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/eduardogr/webser-go)](https://goreportcard.com/report/github.com/eduardogr/webser-go)
+
 <h1 align="center"> go-webserver </h1> <br>
 
 ## Bootstrapping go-server
