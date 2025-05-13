@@ -19,10 +19,13 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
+        go-version: '1.21'
+
+    - name: Wire
+      run: go run github.com/google/wire/cmd/wire cmd/server/wire.go
 
     - name: Build
-      run: go build -v ./...
+      run: go build -tags dev -v ./cmd/server/main.go ./cmd/server/wire_gen.go
 
     - name: Test
       run: go test -v ./...
