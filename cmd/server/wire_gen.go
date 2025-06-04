@@ -7,9 +7,9 @@
 package main
 
 import (
-	"github.com/eduardogr/webser-go/pkg/api"
-	"github.com/eduardogr/webser-go/pkg/repository"
-	"github.com/eduardogr/webser-go/pkg/server"
+	"github.com/eduardogr/webser-go/internal/api"
+	"github.com/eduardogr/webser-go/internal/repository"
+	"github.com/eduardogr/webser-go/internal/server"
 )
 
 // Injectors from wire.go:

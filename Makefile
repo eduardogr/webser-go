@@ -6,7 +6,7 @@ clean:
 
 fmt:
 	go fmt ./cmd/* && \
-	go fmt ./pkg/*
+	go fmt ./internal/*
 
 wire:
 	go run github.com/google/wire/cmd/wire cmd/server/wire.go

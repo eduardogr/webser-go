@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/eduardogr/webser-go/pkg/api"
+	"github.com/eduardogr/webser-go/internal/api"
 )
 
 type Handler struct {
