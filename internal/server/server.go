@@ -6,7 +6,7 @@ import (
 
 	"net/http"
 
-	"github.com/eduardogr/webser-go/pkg/config"
+	"github.com/eduardogr/webser-go/internal/config"
 )
 
 type Server struct {

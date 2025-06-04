@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"database/sql"
+
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/eduardogr/webser-go/pkg/api"
-	"github.com/eduardogr/webser-go/pkg/config"
+	"github.com/eduardogr/webser-go/internal/api"
+	"github.com/eduardogr/webser-go/internal/config"
 )
 
 type Storage interface {
