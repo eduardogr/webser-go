@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -90,7 +90,7 @@ func (h *Handler) CreateNumber(w http.ResponseWriter, r *http.Request) {
 	// get the body of our POST request
 	// unmarshal this into a new NewNumberRequest struct
 
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, _ := io.ReadAll(r.Body)
 
 	var n api.NewNumberRequest
 	err := json.Unmarshal(reqBody, &n)
@@ -134,7 +134,7 @@ func (h *Handler) UpdateNumber(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, _ := io.ReadAll(r.Body)
 	var n api.Number
 	json.Unmarshal(reqBody, &n)
 
