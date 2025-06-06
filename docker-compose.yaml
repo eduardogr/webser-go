@@ -8,7 +8,7 @@ networks:
 services:
 
   mysql:
-    image: mysql:5.7.31
+    image: arm64v8/mysql #mysql:5.7.31
     environment:
       MYSQL_ROOT_PASSWORD: testpass
       MYSQL_DATABASE: basedb
