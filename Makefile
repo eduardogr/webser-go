@@ -21,8 +21,8 @@ build:
 	cmd/server/main.go cmd/server/wire_gen.go
 
 up:
-	docker-compose build base-service-dev && \
-	docker-compose up -d base-service-dev
+	docker compose build base-service-dev --no-cache && \
+	docker compose up -d base-service-dev
 
 down:
 	docker-compose down

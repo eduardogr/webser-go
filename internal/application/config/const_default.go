@@ -1,10 +1,10 @@
-//go:build dev
-// +build dev
+//go:build !dev && !prod
+// +build !dev,!prod
 
 package config
 
 const (
-	STRATEGY = "in_config"
+	STRATEGY = STRATEGY_FROM_CODE
 
 	DB_USER     = "root"
 	DB_PASSWORD = "testpass"

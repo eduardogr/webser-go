@@ -1,40 +1,23 @@
-package repository
+package mysql
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
-	"database/sql"
-
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/eduardogr/webser-go/internal/api"
-	"github.com/eduardogr/webser-go/internal/config"
+	"github.com/eduardogr/webser-go/internal/adapters/interfaces/repositories"
+	"github.com/eduardogr/webser-go/internal/application/config"
+	"github.com/eduardogr/webser-go/internal/domain"
 )
 
-type Storage interface {
-	Initialize() error
-	CloseConnections()
-
-	GetAll() ([]api.Number, error)
-	Get(id int) (api.Number, error)
-	Create(n api.NewNumberRequest) error
-	Update(n api.Number, id int) error
-	Remove(id int) error
-}
-
-type storage struct {
+type Mysql struct {
 	db *sql.DB
 }
 
-func ProvideNumberRepository(s Storage) api.NumberRepository {
-	n := new(api.NumberRepository)
-	*n = s
-	return *n
-}
-
-func NewStorage(db *sql.DB) Storage {
-	s := &storage{db: db}
+func NewMysqlNumberRepository(db *sql.DB) repositories.NumberRepository {
+	s := &Mysql{db: db}
 	err := s.Initialize()
 
 	if err != nil {
@@ -44,7 +27,7 @@ func NewStorage(db *sql.DB) Storage {
 	return s
 }
 
-func (s *storage) Initialize() error {
+func (s *Mysql) Initialize() error {
 	// Create schema
 	create, err := s.db.Query("CREATE TABLE IF NOT EXISTS numbers ( id INTEGER, timestamp VARCHAR(30) )")
 
@@ -57,11 +40,11 @@ func (s *storage) Initialize() error {
 	return nil
 }
 
-func (s *storage) CloseConnections() {
+func (s *Mysql) CloseConnections() {
 	s.db.Close()
 }
 
-func (s *storage) GetAll() ([]api.Number, error) {
+func (s *Mysql) GetAll() ([]domain.Number, error) {
 	results, err := s.db.Query("SELECT id, timestamp FROM numbers")
 
 	if err != nil {
@@ -70,9 +53,9 @@ func (s *storage) GetAll() ([]api.Number, error) {
 
 	defer results.Close()
 
-	var Numbers []api.Number
+	var Numbers []domain.Number
 	for results.Next() {
-		var n api.Number
+		var n domain.Number
 		err := results.Scan(&n.ID, &n.Timestamp)
 
 		if err != nil {
@@ -85,19 +68,19 @@ func (s *storage) GetAll() ([]api.Number, error) {
 	return Numbers, nil
 }
 
-func (s *storage) Get(id int) (api.Number, error) {
+func (s *Mysql) Get(id int) (domain.Number, error) {
 	results, err := s.db.Query("SELECT id, timestamp FROM numbers WHERE id = ?", id)
 
 	if err != nil {
-		return api.Number{}, err
+		return domain.Number{}, err
 	}
 
 	if results.Next() {
-		var n api.Number
+		var n domain.Number
 		err := results.Scan(&n.ID, &n.Timestamp)
 
 		if err != nil {
-			return api.Number{}, err
+			return domain.Number{}, err
 		}
 
 		if n.ID == id {
@@ -107,10 +90,10 @@ func (s *storage) Get(id int) (api.Number, error) {
 
 	defer results.Close()
 
-	return api.Number{}, nil
+	return domain.Number{}, nil
 }
 
-func (s *storage) Create(n api.NewNumberRequest) error {
+func (s *Mysql) Create(n domain.NewNumberRequest) error {
 	timestamp := time.Now()
 	create, err := s.db.Query("INSERT INTO numbers VALUES ( ?, ? )", n.ID, timestamp)
 
@@ -124,7 +107,7 @@ func (s *storage) Create(n api.NewNumberRequest) error {
 	return nil
 }
 
-func (s *storage) Update(n api.Number, id int) error {
+func (s *Mysql) Update(n domain.Number, id int) error {
 	update, err := s.db.Query("UPDATE numbers SET id=? WHERE id=?", n.ID, id)
 
 	if err != nil {
@@ -137,7 +120,7 @@ func (s *storage) Update(n api.Number, id int) error {
 	return nil
 }
 
-func (s *storage) Remove(id int) error {
+func (s *Mysql) Remove(id int) error {
 	remove, err := s.db.Query("DELETE FROM numbers WHERE id = ?", id)
 
 	if err != nil {
@@ -149,7 +132,7 @@ func (s *storage) Remove(id int) error {
 	return nil
 }
 
-func SetupDatabase() (*sql.DB, error) {
+func SetupMysqlDatabase() (*sql.DB, error) {
 	db, err := getConnection()
 
 	if err != nil {

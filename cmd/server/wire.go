@@ -1,22 +1,46 @@
+//go:build wireinject
+// +build wireinject
+
+// The build tag makes sure the stub is not built in the final build.
+
 package main
 
 import (
 	"github.com/google/wire"
 
-	"github.com/eduardogr/webser-go/internal/api"
-	"github.com/eduardogr/webser-go/internal/repository"
-	"github.com/eduardogr/webser-go/internal/server"
+	usecases "github.com/eduardogr/webser-go/internal/application/usecases/numbers"
+	"github.com/eduardogr/webser-go/internal/framework/http"
+	controllers "github.com/eduardogr/webser-go/internal/framework/http/controllers/numbers"
+	"github.com/eduardogr/webser-go/internal/framework/http/routes"
+	"github.com/eduardogr/webser-go/internal/framework/storage/mysql"
 )
 
-func InitializeServer() (*server.Server, error) {
+var NumberRouteControllersSet = wire.NewSet(
+	controllers.NewCreateNumberController,
+	controllers.NewGetAllNumbersController,
+	controllers.NewGetNumberByIdController,
+	controllers.NewUpdateNumberByIdController,
+	controllers.NewRemoveNumberByIdController,
+)
+
+var UseCasesSet = wire.NewSet(
+	usecases.NewCreateNumberUsecase,
+	usecases.NewGetAllNumbersUsecase,
+	usecases.NewGetNumberByIdUsecase,
+	usecases.NewUpdateNumberByIdUsecase,
+	usecases.NewRemoveNumberByIdUsecase,
+)
+
+func InitializeServer() (*http.Server, error) {
 	wire.Build(
-		repository.SetupDatabase,
-		repository.NewStorage,
-		repository.ProvideNumberRepository,
-		api.NewNumberService,
-		server.NewHandler,
-		server.NewRouter,
-		server.NewServer,
+		mysql.SetupMysqlDatabase,
+		mysql.NewMysqlNumberRepository,
+		UseCasesSet,
+		NumberRouteControllersSet,
+		routes.NewStatusRoute,
+		routes.NewNumbersRoute,
+		routes.NewRouterBuilder,
+		http.NewServer,
 	)
-	return &server.Server{}, nil
+	return &http.Server{}, nil
 }

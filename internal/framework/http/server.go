@@ -1,4 +1,4 @@
-package server
+package http
 
 import (
 	"fmt"
@@ -6,21 +6,22 @@ import (
 
 	"net/http"
 
-	"github.com/eduardogr/webser-go/internal/config"
+	"github.com/eduardogr/webser-go/internal/application/config"
+	"github.com/eduardogr/webser-go/internal/framework/http/routes"
 )
 
 type Server struct {
-	router *Router
+	RouterBuilder *routes.RouterBuilder
 }
 
-func NewServer(router *Router) *Server {
+func NewServer(routerBuilder *routes.RouterBuilder) *Server {
 	return &Server{
-		router: router,
+		RouterBuilder: routerBuilder,
 	}
 }
 
 func (s *Server) HandleRequests() error {
-	router, err := s.router.BuildRouter()
+	router, err := s.RouterBuilder.BuildRouter()
 
 	if err != nil {
 		log.Fatal(err)

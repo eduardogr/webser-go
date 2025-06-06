@@ -5,7 +5,7 @@ package config
 
 const (
 	// get config from external provider
-	STRATEGY = "external"
+	STRATEGY = STRATEGY_EXTERNAL
 
 	API_PORT = 8080
 )
