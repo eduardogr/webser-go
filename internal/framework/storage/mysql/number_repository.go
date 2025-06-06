@@ -29,6 +29,7 @@ func NewMysqlNumberRepository(db *sql.DB) repositories.NumberRepository {
 
 func (s *Mysql) Initialize() error {
 	// Create schema
+	// TODO: Actually this is just used in development. A production service will not create tables.
 	create, err := s.db.Query("CREATE TABLE IF NOT EXISTS numbers ( id INTEGER, timestamp VARCHAR(30) )")
 
 	if err != nil {
