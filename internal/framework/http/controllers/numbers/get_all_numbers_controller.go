@@ -19,7 +19,7 @@ type GetAllNumbersController struct {
 }
 
 func (c *GetAllNumbersController) Execute(w http.ResponseWriter, r *http.Request) {
-	Numbers, err := c.GetAllNumbersUsecase.Execute()
+	numbers, err := c.GetAllNumbersUsecase.Execute()
 
 	if err != nil {
 		response := map[string]interface{}{
@@ -33,8 +33,8 @@ func (c *GetAllNumbersController) Execute(w http.ResponseWriter, r *http.Request
 	}
 
 	numbersResponse := []domain.Number{}
-	if Numbers != nil {
-		numbersResponse = Numbers
+	if numbers != nil {
+		numbersResponse = numbers
 	}
 
 	response := map[string]interface{}{
