@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"log"
@@ -7,17 +7,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Router struct {
-	handler *Handler
+type RouterBuilder struct {
+	StatusRoute  *StatusRoute
+	NumbersRoute *NumbersRoute
 }
 
-func NewRouter(handler *Handler) *Router {
-	return &Router{
-		handler: handler,
+func NewRouterBuilder(
+	statusRoute *StatusRoute,
+	numbersRoute *NumbersRoute,
+) *RouterBuilder {
+	return &RouterBuilder{
+		StatusRoute:  statusRoute,
+		NumbersRoute: numbersRoute,
 	}
 }
 
-func (r *Router) BuildRouter() (*mux.Router, error) {
+func (r *RouterBuilder) BuildRouter() (*mux.Router, error) {
 	// creates a new instance of a mux router
 	router := mux.NewRouter().StrictSlash(true)
 
@@ -34,6 +39,9 @@ func (r *Router) BuildRouter() (*mux.Router, error) {
 		})
 	})
 
+	// Paths for /api/
+	apiRouter.HandleFunc(r.StatusRoute.Path, r.StatusRoute.Handle)
+
 	// Paths for /api/v0/
 	var apiV0Router = apiRouter.PathPrefix("/v0").Subrouter()
 	apiV0Router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -46,11 +54,11 @@ func (r *Router) BuildRouter() (*mux.Router, error) {
 	})
 
 	// Paths for /api/v1/
-	apiV1Router.HandleFunc("/numbers", r.handler.CreateNumber).Methods("POST")
-	apiV1Router.HandleFunc("/numbers/{id}", r.handler.UpdateNumber).Methods("PUT")
-	apiV1Router.HandleFunc("/numbers/{id}", r.handler.DeleteNumber).Methods("DELETE")
-	apiV1Router.HandleFunc("/numbers/{id}", r.handler.GetNumber)
-	apiV1Router.HandleFunc("/numbers", r.handler.GetAllNumbers)
+	apiV1Router.HandleFunc(r.NumbersRoute.Path, r.NumbersRoute.CreateNumberController.Execute).Methods("POST")
+	apiV1Router.HandleFunc(r.NumbersRoute.PathID, r.NumbersRoute.UpdateNumberByIdController.Execute).Methods("PUT")
+	apiV1Router.HandleFunc(r.NumbersRoute.PathID, r.NumbersRoute.RemoveNumberByIdController.Execute).Methods("DELETE")
+	apiV1Router.HandleFunc(r.NumbersRoute.PathID, r.NumbersRoute.GetNumberByIdController.Execute)
+	apiV1Router.HandleFunc(r.NumbersRoute.Path, r.NumbersRoute.GetAllNumbersController.Execute)
 
 	return router, nil
 }

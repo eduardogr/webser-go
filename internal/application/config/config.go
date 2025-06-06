@@ -1,10 +1,15 @@
 package config
 
+const (
+	STRATEGY_FROM_CODE = "from_code"
+	STRATEGY_EXTERNAL  = "external"
+)
+
 func GetConfiguration(strategy string) Configuration {
 	var c Configuration
 
 	switch strategy {
-	case "in_config":
+	case STRATEGY_FROM_CODE:
 		c.DbUser = DB_USER
 		c.DbPassword = DB_PASSWORD
 		c.DbHost = DB_HOST
@@ -12,7 +17,7 @@ func GetConfiguration(strategy string) Configuration {
 		c.DbDatabase = DB_DATABASE
 		c.ApiPort = API_PORT
 
-	case "external":
+	case STRATEGY_EXTERNAL:
 		// TODO: get values from external provider since these are supposed to be secrets values
 		c.DbUser = "TODO"
 		c.DbPassword = "TODO"
